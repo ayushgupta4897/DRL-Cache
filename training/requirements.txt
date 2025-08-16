@@ -1,0 +1,74 @@
+# DRL Cache Training Pipeline Requirements
+
+# Deep Learning Framework
+torch>=1.13.0
+torchvision>=0.14.0
+torchaudio>=0.13.0
+
+# Model Export
+onnx>=1.12.0
+onnxruntime>=1.12.0
+
+# Data Processing
+numpy>=1.21.0
+pandas>=1.5.0
+scipy>=1.9.0
+
+# Training & RL
+gym>=0.26.0
+stable-baselines3>=1.7.0  # Optional, for reference implementations
+
+# Visualization & Monitoring
+matplotlib>=3.6.0
+seaborn>=0.11.0
+tensorboard>=2.10.0
+wandb>=0.13.0  # Optional, for experiment tracking
+
+# Data Processing & IO
+h5py>=3.7.0
+pyarrow>=10.0.0  # Fast parquet I/O
+fastparquet>=0.8.3
+
+# Configuration & Utils
+pyyaml>=6.0
+tqdm>=4.64.0
+click>=8.1.0
+colorama>=0.4.5
+
+# Log Processing
+regex>=2022.10.31
+python-dateutil>=2.8.2
+
+# Performance & Profiling
+psutil>=5.9.0
+memory-profiler>=0.60.0
+py-spy>=0.3.12  # Optional, for profiling
+
+# Testing
+pytest>=7.2.0
+pytest-cov>=4.0.0
+pytest-benchmark>=4.0.0
+
+# Code Quality
+black>=22.10.0
+flake8>=5.0.4
+mypy>=0.991
+isort>=5.10.1
+
+# Jupyter (for analysis notebooks)
+jupyter>=1.0.0
+ipykernel>=6.17.0
+ipywidgets>=8.0.0
+
+# Optional: GPU acceleration
+# torch-audio  # Uncomment if using GPU
+# nvidia-ml-py>=11.495.46  # For GPU monitoring
+
+# Optional: Distributed training
+# torch-distributed>=1.13.0
+# horovod>=0.26.0
+
+# Development dependencies
+pre-commit>=2.20.0
+sphinx>=5.3.0  # For documentation
+sphinx-rtd-theme>=1.1.0

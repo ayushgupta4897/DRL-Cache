@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-08-16T13:08:26.146167",
+  "dataset": "nasa_ksc_jul95",
+  "total_experiments": 36,
+  "experiment_type": "real_production_data",
+  "best_overall": {
+    "policy": "LRU",
+    "hit_ratio": 0.9202066666666666,
+    "byte_hit_ratio": 0.8432857035750027,
+    "cache_size_mb": "200",
+    "cache_efficiency": 0.7759971263344079
+  },
+  "best_drl": {
+    "policy": "SmartDRL-K8",
+    "hit_ratio": 0.9202066666666666,
+    "byte_hit_ratio": 0.8432857035750027,
+    "cache_size_mb": "200"
+  },
+  "best_baseline": {
+    "policy": "LRU",
+    "hit_ratio": 0.9202066666666666,
+    "byte_hit_ratio": 0.8432857035750027,
+    "cache_size_mb": "200"
+  },
+  "drl_mean_hit_ratio": 0.9178027777777779,
+  "baseline_mean_hit_ratio": 0.9194358333333333,
+  "improvement_percentage": -0.17761495651469078,
+  "t_statistic": -1.6882872922741123,
+  "p_value": 0.10050944008162974,
+  "statistically_significant": "False",
+  "effect_size_cohens_d": -0.6208773192830139,
+  "drl_95_ci": [
+    0.9150388717870275,
+    0.9205666837685282
+  ],
+  "baseline_95_ci": [
+    0.9188364628567917,
+    0.920035203809875
+  ],
+  "practically_significant": "True",
+  "research_significant": "False",
+  "total_bandwidth_saved_gb": 109.9070296138525,
+  "avg_response_time_improvement_ms": -0.14606057722002141,
+  "avg_origin_load_reduction_pct": 91.78027777777777
+}

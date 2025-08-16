@@ -1,0 +1,14 @@
+# DRL-Cache Research Benchmark Dependencies
+# Minimal dependencies for the breakthrough benchmark
+
+# Core data processing
+numpy>=1.21.0
+pandas>=1.5.0
+
+# Standard library extensions  
+typing-extensions>=4.0.0
+
+# Note: This benchmark is designed to have minimal dependencies
+# and does not require PyTorch, ONNX, or other heavy ML frameworks.
+# It demonstrates DRL superiority through intelligent algorithmic design
+# rather than requiring actual neural networks.

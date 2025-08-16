@@ -1,0 +1,22 @@
+ngx_addon_name=ngx_http_drl_cache_module
+
+if test -n "$ngx_module_link"; then
+    ngx_module_type=HTTP_FILTER
+    ngx_module_name=ngx_http_drl_cache_module
+    ngx_module_incs=
+    ngx_module_deps=
+    ngx_module_srcs="$ngx_addon_dir/src/ngx_http_drl_cache_module.c \
+                     $ngx_addon_dir/src/drl_cache_features.c \
+                     $ngx_addon_dir/src/drl_cache_ipc.c"
+    ngx_module_libs="-lm"
+
+    . auto/module
+else
+    HTTP_MODULES="$HTTP_MODULES ngx_http_drl_cache_module"
+    NGX_ADDON_SRCS="$NGX_ADDON_SRCS \
+                    $ngx_addon_dir/src/ngx_http_drl_cache_module.c \
+                    $ngx_addon_dir/src/drl_cache_features.c \
+                    $ngx_addon_dir/src/drl_cache_ipc.c"
+    NGX_ADDON_DEPS="$NGX_ADDON_DEPS \
+                    $ngx_addon_dir/src/ngx_http_drl_cache_module.h"
+fi

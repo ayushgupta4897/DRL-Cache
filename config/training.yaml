@@ -1,0 +1,191 @@
+# DRL Cache Training Configuration
+# Complete configuration for training the cache eviction policy
+
+experiment_name: "drl_cache_production"
+output_dir: "./outputs"
+
+# Model architecture
+model:
+  input_dim: 6  # Number of features per candidate
+  max_k: 32     # Maximum number of candidates
+  hidden_dim: 256
+  value_hidden_dim: 128
+  advantage_hidden_dim: 128
+  num_hidden_layers: 2
+  dropout_rate: 0.1
+  activation: "relu"
+  use_batch_norm: false
+  use_layer_norm: true
+  weight_init: "xavier_uniform"
+
+# Training hyperparameters
+training:
+  learning_rate: 3.0e-4
+  optimizer: "adam"
+  weight_decay: 1.0e-5
+  grad_clip_norm: 1.0
+  
+  # Learning rate scheduling
+  lr_scheduler: "cosine"
+  lr_warmup_steps: 1000
+  lr_decay_factor: 0.5
+  lr_decay_steps: 10000
+  
+  # DQN parameters
+  gamma: 0.97
+  epsilon_start: 1.0
+  epsilon_end: 0.01
+  epsilon_decay: 0.995
+  
+  # Target network updates
+  target_update_freq: 1000
+  target_update_tau: 0.005
+  use_soft_target_update: true
+  
+  # Training schedule
+  batch_size: 4096
+  num_epochs: 100
+  steps_per_epoch: 1000
+  eval_freq: 5
+  
+  # Early stopping
+  patience: 10
+  min_delta: 1.0e-4
+
+# Experience replay buffer
+replay:
+  capacity: 2000000  # 2M transitions
+  prioritized: true
+  alpha: 0.6         # Prioritization strength
+  beta_start: 0.4    # Importance sampling start
+  beta_end: 1.0      # Importance sampling end
+  epsilon: 1.0e-6    # Numerical stability
+  min_size_to_sample: 10000
+
+# Feature engineering
+features:
+  feature_names:
+    - "age_sec"
+    - "size_kb"
+    - "hit_count"
+    - "inter_arrival_dt"
+    - "ttl_left_sec"
+    - "last_origin_rtt_us"
+  
+  normalize_features: true
+  normalization_method: "standard"  # standard, minmax, robust
+  clip_outliers: true
+  outlier_clip_sigma: 5.0
+  
+  log_scale_size: true
+  sqrt_transform_hits: false
+  
+  update_stats_online: true
+  stats_momentum: 0.999
+
+# Reward function
+reward:
+  hit_reward: 1.0
+  miss_penalty: 0.0
+  
+  # Size penalty
+  use_size_penalty: true
+  size_penalty_lambda: 0.05
+  size_penalty_scale: "mb"
+  
+  # TTL bonus
+  use_ttl_bonus: false
+  ttl_bonus_scale: 0.1
+  
+  # Frequency bonus
+  use_frequency_bonus: true
+  frequency_bonus_scale: 0.2
+
+# Cache simulation
+simulation:
+  max_size_gb: 50.0
+  keys_zone_mb: 512.0
+  inactive_time_hours: 12.0
+  warmup_ratio: 0.1
+  k_candidates: 16
+  lru_fallback_ratio: 0.1
+  track_hit_ratio: true
+  track_byte_hit_ratio: true
+  track_origin_offload: true
+
+# Data processing
+data:
+  log_path: "/var/log/nginx/access.log"
+  log_format: "nginx_combined"
+  
+  # Data filtering
+  min_object_size: 1024      # 1KB
+  max_object_size: 1073741824  # 1GB
+  min_cache_duration: 60     # 1 minute
+  
+  # Dataset splits
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  
+  # Processing
+  chunk_size: 10000
+  max_workers: 4
+  cache_processed_data: true
+  data_cache_dir: "./data/cache"
+
+# Model export
+export:
+  onnx_opset_version: 11
+  onnx_dynamic_axes:
+    input:
+      0: "batch_size"
+    output:
+      0: "batch_size"
+  optimize_model: true
+  quantize_int8: true
+  validate_exported_model: true
+  export_test_tolerance: 1.0e-4
+
+# Logging and monitoring
+logging:
+  log_level: "INFO"
+  log_to_file: true
+  log_file: "./logs/training.log"
+  
+  # TensorBoard
+  use_tensorboard: true
+  tensorboard_dir: "./logs/tensorboard"
+  log_freq: 100
+  
+  # Weights & Biases (optional)
+  use_wandb: false
+  wandb_project: "drl-cache"
+  wandb_entity: null
+  
+  # Checkpointing
+  checkpoint_freq: 5
+  keep_n_checkpoints: 3
+  checkpoint_dir: "./models/checkpoints"
+  
+  # Metrics to track
+  track_metrics:
+    - "loss"
+    - "q_value_mean"
+    - "q_value_std"
+    - "hit_ratio"
+    - "byte_hit_ratio"
+    - "eviction_efficiency"
+    - "inference_time"
+
+# System configuration
+system:
+  device: "auto"  # auto, cpu, cuda, mps
+  num_workers: 4
+  pin_memory: true
+  max_memory_gb: 8.0
+  gradient_checkpointing: false
+  seed: 42
+  deterministic: true
+  profile_training: false
+  profile_dir: "./logs/profiles"

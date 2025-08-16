@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-08-16T13:33:31.933933",
+  "dataset": "challenging_web_hard_20250816_131030",
+  "experiment_type": "challenging_synthetic",
+  "best_overall": {
+    "policy": "SizeBased",
+    "hit_ratio": 0.59283,
+    "byte_hit_ratio": 0.27478245788980926,
+    "cache_size_mb": "2048"
+  },
+  "best_drl": {
+    "policy": "SmartDRL-K8",
+    "hit_ratio": 0.482025,
+    "cache_size_mb": "2048"
+  },
+  "best_baseline": {
+    "policy": "SizeBased",
+    "hit_ratio": 0.59283,
+    "cache_size_mb": "2048"
+  },
+  "drl_mean_hit_ratio": 0.30023833333333333,
+  "baseline_mean_hit_ratio": 0.3438236111111111,
+  "overall_improvement_pct": -12.676638941963938,
+  "improvements_by_cache_size": {
+    
