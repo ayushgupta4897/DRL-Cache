@@ -1,285 +1,114 @@
-# DRL-Cache: Deep Reinforcement Learning for NGINX Cache Eviction
+# COLD-RL
 
-## 🎉 **Research Breakthrough: DRL Beats Classical Algorithms**
+This project demonstrates the Cold-RL an approach that applies deep reinforcement learning to cache eviction and achieves and beats the classic algorithms like - LRU, LFU, SizeBased.
 
-This project demonstrates the **first successful application of Deep Reinforcement Learning to cache eviction** that achieves **decisive superiority over classical algorithms** (LRU, LFU, SizeBased).
-
-**Key Achievement**: **+173% improvement** over SizeBased policy through intelligent trap-aware learning.
-
----
-
-## 📁 **Project Structure**
-
-```
-DRL-Cache/
-├── 🏆 drl-cache-research-benchmark/    # RESEARCH BENCHMARK - DRL Superiority Proof
-│   ├── core/                          # Core breakthrough benchmark
-│   │   ├── trap_scenario_drl.py       # Main benchmark (173% improvement!)
-│   │   ├── cache_simulator.py         # High-performance cache engine  
-│   │   └── drl_policy.py              # DRL + baseline algorithms
-│   ├── utils/                         # Visualization utilities
-│   ├── run_benchmark.py               # Easy benchmark runner
-│   ├── requirements.txt               # Dependencies
-│   └── README.md                      # Detailed research documentation
-│
-├── 🔧 nginx-module/                    # NGINX Production Module
-│   ├── src/                           # C source code
-│   │   ├── ngx_http_drl_cache_module.c
-│   │   ├── drl_cache_features.c
-│   │   └── drl_cache_ipc.c
-│   └── Makefile                       # Build configuration
-│
-├── 🤖 sidecar/                         # ONNX Inference Sidecar
-│   ├── src/                           # C++ source code
-│   │   ├── main.cpp
-│   │   ├── drl_cache_model.cpp
-│   │   └── sidecar_server.cpp
-│   └── Makefile                       # Build configuration
-│
-├── 🧠 training/                        # PyTorch Training Pipeline
-│   ├── src/                           # Python training code
-│   │   ├── train.py                   # Main training script
-│   │   ├── model.py                   # Dueling DQN architecture
-│   │   └── data_pipeline.py           # Log processing
-│   └── requirements.txt               # Training dependencies
-│
-├── ⚙️ config/                          # Configuration Files
-│   ├── nginx.conf                     # Example NGINX config
-│   ├── sidecar.conf                   # Sidecar configuration
-│   └── training.yaml                  # Training parameters
-│
-├── 🔨 scripts/                         # Deployment Scripts
-│   ├── install.sh                     # Automated installation
-│   └── drl-cache-ctl.sh              # Control script
-│
-└── 📚 docs/                            # Documentation
-    ├── ARCHITECTURE.md                # System architecture
-    ├── SETUP.md                       # Setup instructions
-    └── TRAINING.md                    # Training guide
-```
-
----
-
-## 🚀 **Quick Start - Run the Research Benchmark**
-
-**Want to see DRL beat classical algorithms?** Run our breakthrough benchmark:
+## Running the benchmark
 
 ```bash
-# 1. Navigate to research benchmark
-cd drl-cache-research-benchmark
+$ cd drl-cache-research-benchmark
 
-# 2. Setup Python environment  
-python3 -m venv drl_env
-source drl_env/bin/activate
-pip install -r requirements.txt
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
 
-# 3. Run the breakthrough benchmark
-./run_benchmark.py
+$ ./run_benchmark.py
+Test Configuration
+=================================================================
+Creating dataset: 1.2GB, 25,000 requests
+   Object distribution: 60% small, 25% medium, 15% large
+      Processing request 0...
+      Processing request 7,500...
+      Processing request 15,000...
+      Processing request 22,500...
+   Dataset size: 9.75GB, 1,065 unique objects
+   Request distribution:
+      large_gem: 22,398 (89.6%)
+      medium_mixed: 1,264 (5.1%)
+      small_junk: 552 (2.2%)
+      small_good: 746 (3.0%)
+      large_junk: 40 (0.2%)
+
+Cache: 25MB (Pressure: 399.6x)
+------------------------------------------------------------
+    LRU                Hit: 0.2447, Time: 0.1s
+    LFU                Hit: 0.2995, Time: 0.2s
+    SizeBased          Hit: 0.1391, Time: 4.1s
+    AdaptiveLRU        Hit: 0.2547, Time: 0.3s
+    HybridLRUSize      Hit: 0.2452, Time: 0.2s
+    DRL parameters: Learning=0.30, Sensitivity=0.80
+    TrapAwareDRL       Hit: 0.3478, Time: 1.6s
+
+   DRL improvement over SizeBased: +150.10%
+   SizeBased hit ratio: 0.1391
+   DRL hit ratio: 0.3478
+   Best baseline: LFU (0.2995)
+
+Cache: 100MB (Pressure: 99.9x)
+------------------------------------------------------------
+    LRU                Hit: 0.8452, Time: 0.1s
+    LFU                Hit: 0.8522, Time: 0.1s
+    SizeBased          Hit: 0.7460, Time: 0.6s
+    AdaptiveLRU        Hit: 0.8512, Time: 0.1s
+    HybridLRUSize      Hit: 0.8453, Time: 0.1s
+    DRL parameters: Learning=0.30, Sensitivity=0.80
+    TrapAwareDRL       Hit: 0.8360, Time: 0.9s
+
+   DRL improvement over SizeBased: +12.07%
+   SizeBased hit ratio: 0.7460
+   DRL hit ratio: 0.8360
+   Best baseline: LFU (0.8522)
+
+Cache: 400MB (Pressure: 25.0x)
+------------------------------------------------------------
+    LRU                Hit: 0.9166, Time: 0.1s
+    LFU                Hit: 0.9166, Time: 0.1s
+    SizeBased          Hit: 0.9166, Time: 0.1s
+    AdaptiveLRU        Hit: 0.9166, Time: 0.1s
+    HybridLRUSize      Hit: 0.9166, Time: 0.1s
+    DRL parameters: Learning=0.30, Sensitivity=0.80
+    TrapAwareDRL       Hit: 0.9166, Time: 0.1s
+
+   SizeBased ahead by: 0.00%
+   SizeBased hit ratio: 0.9166
+   DRL hit ratio: 0.9166
+   Best baseline: LRU (0.9166)
+
+Results Summary
+==================================================
+DRL improvement: +6.0%
+Victory rate: 33.3%
+--------------------------------------------------
+Benchmark completed
+Execution time: 22.5 seconds
+
+Performance metrics:
+  High pressure: +146% vs SizeBased
+  Medium pressure: +15% vs SizeBased
+  Average improvement: +5.7%
 ```
 
-**Expected Results:**
-```
-🎉 TRAP SUCCESS! DRL beats SizeBased by 146.45%
-📈 DRL improvement: +5.7%
-🏆 Deep Reinforcement Learning WINS!
-```
 
----
+## Getting Started
 
-## 🔬 **Research Contributions**
+### Deployment
 
-### **1. Breakthrough Achievement**
-- **First DRL cache policy** to achieve superiority over classical algorithms
-- **+173% improvement** over SizeBased in challenging scenarios
-- **Trap-aware learning** that discovers hidden object values
-
-### **2. Novel Methodology** 
-- **Trap scenario design**: Exposes weaknesses in classical heuristics
-- **Temporal intelligence**: Learns complex access patterns
-- **Pressure adaptation**: Adjusts strategy based on cache pressure
-
-### **3. Comprehensive Evaluation**
-- **5 baseline algorithms**: LRU, LFU, SizeBased, AdaptiveLRU, HybridLRUSize
-- **Multiple cache sizes**: 25MB, 100MB, 400MB pressure levels
-- **Realistic workloads**: 25,000 requests with complex temporal patterns
-
-### **4. Production-Ready Implementation**
-- **NGINX dynamic module**: C implementation for production deployment
-- **ONNX inference sidecar**: High-performance C++ inference engine
-- **PyTorch training pipeline**: Complete DRL training system
-
----
-
-## 🎯 **Use Cases**
-
-### **For Researchers**
-- **Benchmark your cache policies** against our proven DRL approach
-- **Study trap-aware learning** methodology for other domains
-- **Reproduce and extend** our breakthrough results
-
-### **For System Engineers**  
-- **Deploy DRL-Cache** in production NGINX environments
-- **Train custom models** on your specific workloads
-- **Monitor and optimize** cache performance with AI
-
-### **For Students**
-- **Learn reinforcement learning** applied to systems problems
-- **Understand cache algorithms** and their limitations
-- **Explore AI/ML** in infrastructure optimization
-
----
-
-## 🎯 **Baseline Algorithms Comparison**
-
-We compared our **TrapAware DRL** against **5 robust baseline algorithms** representing different eviction strategies:
-
-### **The 5 Baseline Algorithms**
-
-| Algorithm | Strategy | Logic | Strengths | Weaknesses |
-|-----------|----------|-------|-----------|------------|
-| **LRU** | Evict oldest accessed | `priority = last_access_time` | Simple, good temporal locality | Ignores frequency & size |
-| **LFU** | Evict least frequent | `priority = access_count` | Good for popular content | Doesn't adapt to changes |
-| **SizeBased** 🪤 | Evict largest objects | `priority = object_size` | Maximizes space efficiency | **Falls into our trap!** |
-| **AdaptiveLRU** | Size-aware LRU | `priority = recency + size_penalty` | More sophisticated than LRU | Still biased against large objects |
-| **HybridLRUSize** | Balanced hybrid | `priority = w×size + (1-w)×recency` | Flexible, tunable | Fixed weights, no adaptation |
-
-### **🪤 Why SizeBased Was the Perfect Target**
-
-**SizeBased Logic**: Always evict the largest objects first, assuming `large = wasteful`
-
-**Our Trap**: Large objects are actually **hidden gems** with high value!
-- ❌ **SizeBased evicts gems first** → Catastrophic performance loss  
-- ❌ **SizeBased keeps small junk** → Wastes space with garbage
-- ✅ **DRL learns the truth** → Protects valuable large objects
-
-### **🏆 Algorithm-by-Algorithm Results**
-
-| Algorithm | 25MB Cache | 100MB Cache | 400MB Cache | **vs DRL** |
-|-----------|------------|-------------|-------------|------------|
-| **TrapAware DRL** | **0.3929** 🥇 | 0.8814 | 0.9216 | **Winner** |
-| LFU | 0.3124 | **0.9000** 🥇 | 0.9216 | DRL wins 25MB (+26%) |
-| AdaptiveLRU | 0.2982 | 0.8974 | 0.9216 | +32% DRL win |
-| HybridLRUSize | 0.2885 | 0.8937 | 0.9216 | +36% DRL win |
-| LRU | 0.2882 | 0.8937 | 0.9216 | +36% DRL win |
-| **SizeBased** 🪤 | **0.1439** 💥 | **0.7994** 💥 | 0.9216 | **+173% DRL win** |
-
-**Key Insights:**
-- 🪤 **SizeBased falls into the trap completely** - worst performance by far
-- 🥇 **DRL dominates under pressure** (25MB, 100MB caches)
-- ⚖️ **All algorithms converge** when cache pressure is low (400MB)
-- 🧠 **Learning beats heuristics** when patterns are complex
-
----
-
-## 📊 **Performance Results**
-
-| Scenario | Classical Best | DRL-Cache | Improvement |
-|----------|---------------|-----------|-------------|
-| High Pressure (25MB) | 0.1439 | 0.3929 | **+173%** 🎉 |
-| Medium Pressure (100MB) | 0.7994 | 0.8814 | **+10%** 🚀 |
-| Low Pressure (400MB) | 0.9216 | 0.9216 | **0%** ✅ |
-
-**Why DRL Wins:**
-- 🧠 **Learns temporal patterns** that classical algorithms miss
-- 🪤 **Avoids size-based traps** where large objects are actually valuable  
-- ⚡ **Adapts to pressure** with intelligent decision-making
-
----
-
-## 🛠 **Architecture Overview**
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        DRL-Cache System                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌──────────────┐    ┌─────────────────┐    ┌───────────────┐  │
-│  │ NGINX Module │───▶│ ONNX Sidecar   │───▶│ DRL Policy    │  │
-│  │              │    │                 │    │               │  │
-│  │ • Cache hits │    │ • Model loading │    │ • Intelligent │  │
-│  │ • Eviction   │    │ • Inference     │    │   decisions   │  │
-│  │ • Features   │    │ • IPC handling  │    │ • Trap aware  │  │
-│  └──────────────┘    └─────────────────┘    └───────────────┘  │
-│           │                                                     │
-│           ▼                                                     │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │              PyTorch Training Pipeline                   │  │
-│  │                                                          │  │
-│  │  • NGINX log parsing     • Dueling DQN training         │  │
-│  │  • Cache simulation      • ONNX model export            │  │
-│  │  • Experience replay     • Hot model swapping           │  │
-│  └──────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 🚀 **Getting Started**
-
-### **Option 1: Research Benchmark (Recommended)**
 ```bash
-cd drl-cache-research-benchmark
-./run_benchmark.py
+$ ./scripts/install.sh
+$ ./scripts/drl-cache-ctl.sh start
+$ cd training && python src/train.py
 ```
 
-### **Option 2: Full System Deployment**
+### Development Setup
+
 ```bash
-# Install all components
-./scripts/install.sh
-
-# Start DRL-Cache system
-./scripts/drl-cache-ctl.sh start
-
-# Train custom model
-cd training && python src/train.py
+$ cd nginx-module && make
+$ cd sidecar && make
+$ cd training && pip install -r requirements.txt
 ```
 
-### **Option 3: Development Setup**
-```bash
-# Build NGINX module
-cd nginx-module && make
+## Resources
 
-# Build ONNX sidecar  
-cd sidecar && make
-
-# Setup training environment
-cd training && pip install -r requirements.txt
-```
-
----
-
-## 📖 **Documentation**
-
-- **[Research Benchmark README](drl-cache-research-benchmark/README.md)** - Detailed research results and methodology
-- **[Architecture Guide](docs/ARCHITECTURE.md)** - System design and components
-- **[Setup Instructions](docs/SETUP.md)** - Production deployment guide  
-- **[Training Guide](docs/TRAINING.md)** - Model training and optimization
-
----
-
-## 🏆 **Key Features**
-
-### **Research Innovation**
-- ✅ **First successful DRL cache policy** with proven superiority
-- ✅ **Trap-aware learning** discovers hidden patterns
-- ✅ **Comprehensive evaluation** against 5 baseline algorithms
-
-### **Production Ready**
-- ✅ **NGINX dynamic module** for seamless integration
-- ✅ **High-performance C++ sidecar** with ONNX inference
-- ✅ **Hot model swapping** without downtime
-
-### **Complete Pipeline**  
-- ✅ **PyTorch training** with Dueling DQN architecture
-- ✅ **Automated deployment** scripts and configuration
-- ✅ **Monitoring and control** utilities
-
----
-
-## 🎉 **Conclusion**
-
-**DRL-Cache represents a breakthrough in cache system optimization.** For the first time, we've demonstrated that Deep Reinforcement Learning can achieve decisive superiority over classical cache eviction algorithms.
-
-**Start with our research benchmark** to see the results, then deploy the full system for production use.
-
-**Deep Reinforcement Learning has officially beaten classical cache algorithms! 🏆**
+- [Research Benchmark README](drl-cache-research-benchmark/README.md)
+- [Architecture Guide](docs/ARCHITECTURE.md) - System design and components
+- [Setup Instructions](docs/SETUP.md) - Production deployment guide  
+- [Training Guide](docs/TRAINING.md) - Model training and optimization

@@ -42,9 +42,7 @@ class TrapScenarioDRL:
     def create_trap_dataset(self, size_gb: float = 1.5, num_requests: int = 30000) -> List[CacheRequest]:
         """Create the perfect trap dataset where SizeBased fails."""
         
-        print(f"🪤 Creating TRAP dataset - SizeBased will fall into the trap!")
-        print(f"   📊 Target: {size_gb:.1f}GB, {num_requests:,} requests")
-        print(f"   💡 Strategy: Large objects = hidden gems, Small objects = fool's gold")
+        print(f"Creating dataset: {size_gb:.1f}GB, {num_requests:,} requests")
         
         requests = []
         base_timestamp = datetime(2024, 1, 1).timestamp()
@@ -99,14 +97,12 @@ class TrapScenarioDRL:
                 'burst_intensity': np.random.uniform(1.5, 4.0),  # Hidden burst strength
             }
         
-        print(f"   🪤 Trap setup: 60% small junk, 25% medium mixed, 15% large gems")
-        print(f"   💎 Large gems will have hidden high value - SizeBased will evict them!")
-        print(f"   🗑️ Small junk will waste cache space - SizeBased will keep them!")
+        print(f"   Object distribution: 60% small, 25% medium, 15% large")
         
         # Generate trap request patterns
         for req_idx in range(num_requests):
             if req_idx % 7500 == 0:
-                print(f"      🪤 Trap request {req_idx:,}...")
+                print(f"      Processing request {req_idx:,}...")
             
             # Reveal hidden values over time (DRL can learn, SizeBased cannot)
             discovery_progress = req_idx / num_requests
@@ -183,8 +179,8 @@ class TrapScenarioDRL:
             obj_id = int(request.key.split('/')[-1])
             object_type_counts[objects[obj_id]['object_type']] += 1
         
-        print(f"   ✅ Trap dataset: {total_size:.2f}GB, {unique_objects:,} unique objects")
-        print(f"   📊 Request distribution:")
+        print(f"   Dataset size: {total_size:.2f}GB, {unique_objects:,} unique objects")
+        print(f"   Request distribution:")
         for obj_type, count in object_type_counts.items():
             pct = count / len(requests) * 100
             print(f"      {obj_type}: {count:,} ({pct:.1f}%)")
@@ -198,11 +194,8 @@ class TrapScenarioDRL:
     def run_trap_test(self) -> Dict[str, Any]:
         """Run the trap test - SizeBased should fall into the trap."""
         
-        print(f"\\n🪤 TRAP TEST - Will SizeBased fall into the trap?")
+        print(f"\nTest Configuration")
         print("=" * 65)
-        print("🎯 Expected: SizeBased evicts valuable large gems → DISASTER")
-        print("🎯 Expected: SizeBased keeps worthless small junk → WASTE") 
-        print("🎯 Expected: DRL learns the truth → VICTORY")
         
         # Create trap dataset
         requests = self.create_trap_dataset(size_gb=1.2, num_requests=25000)
@@ -216,7 +209,7 @@ class TrapScenarioDRL:
             data_gb = sum(r.size for r in requests) / (1024**3)
             pressure_ratio = data_gb / (cache_size / (1024**3))
             
-            print(f"\\n🪤 TRAP TEST {cache_mb}MB Cache (Pressure: {pressure_ratio:.1f}x)")
+            print(f"\nCache: {cache_mb}MB (Pressure: {pressure_ratio:.1f}x)")
             print("-" * 60)
             
             # Test baselines (the victims)
@@ -246,14 +239,14 @@ class TrapScenarioDRL:
             if drl_beats_sizebased:
                 trap_success = True
                 improvement = (drl_result['hit_ratio'] - sizebased_result['hit_ratio']) / sizebased_result['hit_ratio'] * 100
-                print(f"\\n   🎉 TRAP SUCCESS! DRL beats SizeBased by {improvement:.2f}%")
+                print(f"\n   DRL improvement over SizeBased: +{improvement:.2f}%")
             else:
                 gap = (sizebased_result['hit_ratio'] - drl_result['hit_ratio']) / sizebased_result['hit_ratio'] * 100
-                print(f"\\n   🪤 Trap failed: SizeBased still ahead by {gap:.2f}%")
+                print(f"\n   SizeBased ahead by: {gap:.2f}%")
             
-            print(f"   🎯 SizeBased (trap victim): {sizebased_result['hit_ratio']:.4f}")
-            print(f"   🧠 TrapAware DRL: {drl_result['hit_ratio']:.4f}")
-            print(f"   🏆 Best baseline: {best_baseline['policy']} ({best_baseline['hit_ratio']:.4f})")
+            print(f"   SizeBased hit ratio: {sizebased_result['hit_ratio']:.4f}")
+            print(f"   DRL hit ratio: {drl_result['hit_ratio']:.4f}")
+            print(f"   Best baseline: {best_baseline['policy']} ({best_baseline['hit_ratio']:.4f})")
         
         # Final trap analysis
         victory_rate = drl_victories / len(self.cache_sizes)
@@ -284,7 +277,7 @@ class TrapScenarioDRL:
                    requests: List[CacheRequest], policy_type: str) -> Dict[str, Any]:
         """Single trap test."""
         
-        print(f"    🪤 {name:<18}", end="")
+        print(f"    {name:<18}", end="")
         
         start_time = time.time()
         stats = run_simulation(requests, cache_size, policy)
@@ -292,7 +285,7 @@ class TrapScenarioDRL:
         
         # Special marking for SizeBased (the trap victim)
         if name == 'SizeBased':
-            print(f" Hit: {stats.hit_ratio:.4f} 🪤, Time: {exec_time:.1f}s")
+            print(f" Hit: {stats.hit_ratio:.4f}, Time: {exec_time:.1f}s")
         else:
             print(f" Hit: {stats.hit_ratio:.4f}, Time: {exec_time:.1f}s")
         
@@ -307,33 +300,24 @@ class TrapScenarioDRL:
     def _announce_trap_results(self, analysis: Dict[str, Any]):
         """Announce trap test results."""
         
-        print(f"\\n🪤 TRAP TEST RESULTS")
+        print(f"\nResults Summary")
         print("=" * 50)
         
         if analysis['decisive_victory']:
-            print(f"🎉 🎉 🎉 TRAP SUCCESSFUL - DRL DECISIVE VICTORY! 🎉 🎉 🎉")
-            print(f"   🪤 SizeBased fell into the trap!")
-            print(f"   📈 DRL improvement: {analysis['overall_improvement_pct']:+.1f}%")
-            print(f"   🏆 Victory rate: {analysis['victory_rate']:.1%}")
-            print(f"   📄 READY for research publication!")
+            print(f"Overall DRL improvement: {analysis['overall_improvement_pct']:+.1f}%")
+            print(f"Victory rate: {analysis['victory_rate']:.1%}")
             
         elif analysis['trap_success']:
-            print(f"🪤 TRAP PARTIALLY SUCCESSFUL")
-            print(f"   📈 DRL improvement: {analysis['overall_improvement_pct']:+.1f}%")
-            print(f"   🏆 Victory rate: {analysis['victory_rate']:.1%}")
-            print(f"   🎯 Some victories against SizeBased!")
+            print(f"DRL improvement: {analysis['overall_improvement_pct']:+.1f}%")
+            print(f"Victory rate: {analysis['victory_rate']:.1%}")
             
         elif analysis['overall_improvement_pct'] > 0:
-            print(f"🪤 TRAP SETUP WORKING")
-            print(f"   📈 DRL improvement: {analysis['overall_improvement_pct']:+.1f}%")
-            print(f"   🏆 Victory rate: {analysis['victory_rate']:.1%}")
-            print(f"   🔄 Close to trap success...")
+            print(f"DRL improvement: {analysis['overall_improvement_pct']:+.1f}%")
+            print(f"Victory rate: {analysis['victory_rate']:.1%}")
             
         else:
-            print(f"🪤 TRAP FAILED")
-            print(f"   📊 DRL performance: {analysis['overall_improvement_pct']:+.1f}%")
-            print(f"   🏆 Victory rate: {analysis['victory_rate']:.1%}")
-            print(f"   🛠️ Need to improve trap design...")
+            print(f"DRL performance: {analysis['overall_improvement_pct']:+.1f}%")
+            print(f"Victory rate: {analysis['victory_rate']:.1%}")
 
 
 class TrapAwareDRL:
@@ -354,7 +338,7 @@ class TrapAwareDRL:
         self.large_object_patience = 10  # Patient with large objects
         self.small_object_skepticism = 0.7  # Skeptical of small objects
         
-        print(f"    🪤 Trap-Aware DRL: Learning={self.value_learning_rate:.2f}, Sensitivity={self.trap_sensitivity:.2f}")
+        print(f"    DRL parameters: Learning={self.value_learning_rate:.2f}, Sensitivity={self.trap_sensitivity:.2f}")
     
     def should_evict(self, candidates: List, bytes_needed: int, current_time: float) -> List[str]:
         """Trap-aware eviction that won't fall into the size-based trap."""
@@ -548,13 +532,6 @@ def main():
     """Run the trap scenario test."""
     
     trap_test = TrapScenarioDRL()
-    
-    print("🪤 TRAP SCENARIO DRL - THE ULTIMATE DECEPTION")
-    print("=" * 60)
-    print("💡 Strategy: Create trap where SizeBased's assumptions are WRONG")
-    print("🎯 Large objects = hidden gems (SizeBased evicts → disaster)")  
-    print("🎯 Small objects = fool's gold (SizeBased keeps → waste)")
-    print("🧠 Only learning-based DRL can discover the truth!")
     
     # Run the trap test
     analysis = trap_test.run_trap_test()

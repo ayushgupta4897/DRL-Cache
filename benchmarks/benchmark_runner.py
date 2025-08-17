@@ -104,9 +104,9 @@ class BenchmarkRunner:
             print(f"  Processing {dataset_name}...")
             success = self.downloader.download_dataset(dataset_name)
             if success:
-                print(f"  ✓ {dataset_name} ready")
+                print(f"  [OK] {dataset_name} ready")
             else:
-                print(f"  ✗ {dataset_name} failed")
+                print(f"  [FAILED] {dataset_name} failed")
                 
     def create_policies(self) -> Dict[str, Any]:
         """Create all policy instances for benchmarking."""
